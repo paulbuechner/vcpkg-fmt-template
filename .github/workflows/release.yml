@@ -1,0 +1,196 @@
+name: Release
+
+on:
+  push:
+    paths:
+      - '.changeset/**'
+      - 'src/**'
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  build:
+    name: ${{ matrix.os }}-${{ github.workflow }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-latest, ubuntu-latest, macos-latest ]
+        include:
+          - os: windows-latest
+            triplet: x64-windows
+          - os: ubuntu-latest
+            triplet: x64-linux
+          - os: macos-latest
+            triplet: x64-osx
+    env:
+      # Indicates the location of the vcpkg as a Git submodule of the project repository.
+      VCPKG_ROOT: ${{ github.workspace }}/deps/vcpkg
+      # Tells vcpkg where binary packages are stored.
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/deps/vcpkg/bincache
+      # Let's use GitHub Action cache as storage for the vcpkg Binary Caching feature.
+      VCPKG_BINARY_SOURCES: 'clear;x-gha,readwrite'
+
+    steps:
+      # Set env vars needed for vcpkg to leverage the GitHub Action cache as a storage
+      # for Binary Caching.
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+
+      # Create the directory to store the vcpkg's binary cache.
+      - name: "Create directory '${{ env.VCPKG_DEFAULT_BINARY_CACHE }}'"
+        run: mkdir -p $VCPKG_DEFAULT_BINARY_CACHE
+        shell: bash
+
+      # Setup the build machine with the most recent versions of CMake and Ninja. Both are cached if not already: on subsequent runs both will be quickly restored from GitHub cache service.
+      - uses: lukka/get-cmake@latest
+
+      # Restore vcpkg from the GitHub Action cache service. Note that packages are restored by vcpkg's binary caching
+      # when it is being run afterward by CMake.
+      - name: Restore vcpkg
+        uses: actions/cache@v3
+        with:
+          # The first path is the location of vcpkg: it contains the vcpkg executable and data files, as long as the
+          # built package archives (aka binary cache) which are located by VCPKG_DEFAULT_BINARY_CACHE env var.
+          # The other paths starting with '!' are exclusions: they contain temporary files generated during the build of the installed packages.
+          path: |
+            ${{ env.VCPKG_ROOT }}
+            !${{ env.VCPKG_ROOT }}/buildtrees
+            !${{ env.VCPKG_ROOT }}/packages
+            !${{ env.VCPKG_ROOT }}/downloads
+            !${{ env.VCPKG_ROOT }}/installed
+          # The key is composed in a way that it gets properly invalidated whenever a different version of vcpkg is being used.
+          key: |
+            ${{ hashFiles( '.git/modules/vcpkg/HEAD' )}}
+
+      # On Windows runners, let's ensure to have the Developer Command Prompt environment setup correctly.
+      # As used here the Developer Command Prompt created is targeting x64 and using the default the Windows SDK.
+      - uses: ilammy/msvc-dev-cmd@v1
+
+      # Run CMake to generate Ninja project files, using the vcpkg's toolchain file to resolve and install
+      # the dependencies as specified in vcpkg.json. Note that the vcpkg's toolchain is specified
+      # in the CMakePresets.json file.
+      # This step also runs vcpkg with Binary Caching leveraging GitHub Action cache to
+      # store the built packages artifacts.
+      - name: Restore from cache the dependencies and generate project files
+        shell: bash
+        run: |
+          cmake --preset vcpkg-fmt-template-ninja-multiconfiguration-vcpkg
+
+      # Build (Release configuration only) the whole project with Ninja (which is spawn by CMake).
+      - name: Build (Release configuration)
+        shell: bash
+        run: |
+          cmake --build --preset vcpkg-fmt-template-ninja-multiconfiguration-vcpkg --config Release
+
+      # Upload vcpkg's logs as artifacts.
+      - name: Upload vcpkg build log files
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: vcpkg-log-files-${{ matrix.os }}
+          path: deps/vcpkg/buildtrees/**/*.log
+
+      # Upload builds logs as artifacts.
+      - name: Upload builds log files
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: builds-log-files-${{ matrix.os }}
+          path: builds/**/*.log
+
+      # Package (Release configuration only).
+      - name: Package (Release configuration)
+        if: "contains(github.event.head_commit.message, 'ci(changesets): version packages')"
+        shell: bash
+        run: |
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            cpack --preset vcpkg-fmt-template-ninja-multiconfiguration-vcpkg-windows
+          elif [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            cpack --preset vcpkg-fmt-template-ninja-multiconfiguration-vcpkg-linux
+          elif [ "${{ matrix.os }}" == "macos-latest" ]; then
+            cpack --preset vcpkg-fmt-template-ninja-multiconfiguration-vcpkg-osx
+          fi
+
+      # Upload packages as artifacts.
+      - name: Upload package artifacts
+        if: "success() && contains(github.event.head_commit.message, 'ci(changesets): version packages')"
+        uses: actions/upload-artifact@v3
+        with:
+          name: packages-${{ matrix.os }}
+          path: |
+            packages/*.zip
+            packages/*.exe
+            packages/*.deb
+            packages/*.rpm
+            packages/*.pkg
+            packages/*.dmg
+
+  publish:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          registry-url: 'https://registry.npmjs.org'
+
+      - uses: pnpm/action-setup@v2
+        name: Install pnpm
+        id: pnpm-install
+        with:
+          version: 8
+          run_install: false
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: pnpm-deps-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            pnpm-deps-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Create Release Pull Request
+        id: changesets
+        uses: changesets/action@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Bump version
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          pnpm version-bump
+          pnpm version-bump:commit
+
+      - name: Update changelog
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          pnpm changelog:latest
+          pnpm changelog:format
+          pnpm changelog:commit
+
+      - name: Trigger Upload Workflow
+        if: steps.changesets.outputs.published == 'true'
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: upload_assets.yml
+          token: ${{ secrets.GH_TOKEN }}
