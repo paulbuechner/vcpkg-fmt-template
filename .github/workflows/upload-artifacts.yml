@@ -34,7 +34,7 @@ jobs:
         run: |
           echo "::set-output name=id::$(gh release list --repo $GITHUB_REPOSITORY | head -n 1 | awk '{print $1}')"
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload release assets (packages)
         if: steps.changesets.outputs.published == 'true'
@@ -45,4 +45,4 @@ jobs:
             gh release upload ${{ steps.latest_release.outputs.id }} "$file" --clobber --repo $GITHUB_REPOSITORY
           done
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -173,7 +173,7 @@ jobs:
         id: changesets
         uses: changesets/action@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Bump version
         if: steps.changesets.outputs.published == 'true'
@@ -193,4 +193,3 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           workflow: Upload artifacts
-          token: ${{ secrets.GH_TOKEN }}
