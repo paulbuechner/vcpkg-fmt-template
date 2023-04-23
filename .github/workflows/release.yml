@@ -192,5 +192,5 @@ jobs:
         if: steps.changesets.outputs.published == 'true'
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: ./.github/workflows/upload-artifacts.yml
+          workflow: Upload artifacts
           token: ${{ secrets.GH_TOKEN }}
