@@ -1,0 +1,48 @@
+name: Upload artifacts
+
+on:
+  workflow_dispatch:
+
+jobs:
+  upload:
+    name: Upload package artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Download packages-windows-latest artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: packages-windows-latest
+          path: artifacts
+
+      - name: Download packages-ubuntu-latest artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: packages-ubuntu-latest
+          path: artifacts
+
+      - name: Download packages-macos-latest artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: packages-macos-latest
+          path: artifacts
+
+      - name: Get latest release
+        id: latest_release
+        run: |
+          echo "::set-output name=id::$(gh release list --repo $GITHUB_REPOSITORY | head -n 1 | awk '{print $1}')"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Upload release assets (packages)
+        if: steps.changesets.outputs.published == 'true'
+        run: |
+          for file in artifacts/*; do
+            [ -e "$file" ] || continue
+            echo "Uploading $file"
+            gh release upload ${{ steps.latest_release.outputs.id }} "$file" --clobber --repo $GITHUB_REPOSITORY
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
