@@ -1,6 +1,6 @@
 {
   "name": "vcpkg-fmt-template",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "license": "MIT",
   "description": "A sample project that uses fmt from vcpkg",
   "dependencies": [
