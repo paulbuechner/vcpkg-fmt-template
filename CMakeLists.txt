@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.25)
 
-set(VCPKG_FMT_TEMPLATE_VERSION 0.0.0)
+set(VCPKG_FMT_TEMPLATE_VERSION 0.1.0)
 project(vcpkg-fmt-template VERSION ${VCPKG_FMT_TEMPLATE_VERSION} LANGUAGES CXX)
 
 # Set default build to release
