@@ -94,9 +94,9 @@ function (build_3rd_party_copyright)
       continue() # Skip the current iteration
     endif ()
 
-    file(APPEND ${LICENSE_3RD_PARTY_FILE} "-------------------------------------------------\n")
+    file(APPEND ${LICENSE_3RD_PARTY_FILE} "-------------------------------------------------------------------------------\n")
     file(APPEND ${LICENSE_3RD_PARTY_FILE} "${LIBRARY_NAME}\n")
-    file(APPEND ${LICENSE_3RD_PARTY_FILE} "-------------------------------------------------\n")
+    file(APPEND ${LICENSE_3RD_PARTY_FILE} "-------------------------------------------------------------------------------\n")
     file(READ ${copyright_file} COPYRIGHT_CONTENTS)
     file(APPEND ${LICENSE_3RD_PARTY_FILE} "${COPYRIGHT_CONTENTS}\n")
   endforeach ()
