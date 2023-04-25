@@ -1,5 +1,12 @@
 [
   {
+    "id": 9,
+    "url": "https://github.com/paulbuechner/vcpkg-fmt-template/pull/9",
+    "body": "---\ntitle: Version 0.1.1\ndescription: Explore the changelog for vcpkg-fmt-template version 0.1.1. Learn about the latest features, bug fixes, and improvements.\nreleaseUrl: https://github.com/paulbuechner/vcpkg-fmt-template/pull/9\nreleaseDate: April 25, 2023\nversion: 0.1.1\n---\n\n\n\n## vcpkg-fmt-template@0.1.1\n\n### Patch Changes\n\n-   [#8](https://github.com/paulbuechner/vcpkg-fmt-template/pull/8) [`e897a7e`](https://github.com/paulbuechner/vcpkg-fmt-template/commit/e897a7e36f6fe23666d3feb6dc0cce857597fe16) Thanks [@paulbuechner](https://github.com/paulbuechner)! - Update README\n",
+    "date": "April 25, 2023",
+    "version": "0.1.1"
+  },
+  {
     "id": 7,
     "url": "https://github.com/paulbuechner/vcpkg-fmt-template/pull/7",
     "body": "---\ntitle: Version 0.1.0\ndescription: Explore the changelog for vcpkg-fmt-template version 0.1.0. Learn about the latest features, bug fixes, and improvements.\nreleaseUrl: https://github.com/paulbuechner/vcpkg-fmt-template/pull/7\nreleaseDate: April 23, 2023\nversion: 0.1.0\n---\n\n\n\n## vcpkg-fmt-template@0.1.0\n\n### Minor Changes\n\n-   [#5](https://github.com/paulbuechner/vcpkg-fmt-template/pull/5) [`6bf15c6`](https://github.com/paulbuechner/vcpkg-fmt-template/commit/6bf15c6a34e0c4e308de6ec0b8b285941e0f8670) Thanks [@paulbuechner](https://github.com/paulbuechner)! - Initial release\n",
