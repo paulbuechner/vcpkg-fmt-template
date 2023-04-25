@@ -29,17 +29,15 @@
       "name": "vcpkg-fmt-template-ninja-multiconfiguration-vcpkg",
       "configurePreset": "vcpkg-fmt-template-ninja-multiconfiguration-vcpkg",
       "displayName": "Build vcpkg-fmt-template-ninja-multiconfiguration-vcpkg",
-      "description": "Build with Ninja the configuration specified with --config"
+      "description": "Build with Ninja the configuration specified with --config",
+      "configuration": "Release"
     }
   ],
   "packagePresets": [
     {
       "name": "vcpkg-fmt-template-ninja-multiconfiguration-vcpkg-windows",
       "configurePreset": "vcpkg-fmt-template-ninja-multiconfiguration-vcpkg",
-      "generators": [
-        "ZIP",
-        "NSIS"
-      ],
+      "generators": ["ZIP", "NSIS"],
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -49,11 +47,7 @@
     {
       "name": "vcpkg-fmt-template-ninja-multiconfiguration-vcpkg-linux",
       "configurePreset": "vcpkg-fmt-template-ninja-multiconfiguration-vcpkg",
-      "generators": [
-        "DEB",
-        "RPM",
-        "TGZ"
-      ],
+      "generators": ["DEB", "RPM", "TGZ"],
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -63,9 +57,7 @@
     {
       "name": "vcpkg-fmt-template-ninja-multiconfiguration-vcpkg-osx",
       "configurePreset": "vcpkg-fmt-template-ninja-multiconfiguration-vcpkg",
-      "generators": [
-        "DragNDrop"
-      ],
+      "generators": ["DragNDrop"],
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",

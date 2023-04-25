@@ -1,7 +1,7 @@
 {
   "name": "vcpkg-fmt-template",
   "version": "0.1.0",
-  "description": "A sample project that uses fmt from vcpkg",
+  "description": "A sample project template that uses fmt via vcpkg featuring a fully integrated CI/CD pipeline to build, test and release the project.",
   "homepage": "https://github.com/paulbuechner/vcpkg-fmt-template",
   "repository": {
     "type": "git",

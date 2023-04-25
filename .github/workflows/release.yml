@@ -111,7 +111,7 @@ jobs:
       - name: Build (Release configuration)
         shell: bash
         run: |
-          cmake --build --preset vcpkg-fmt-template-ninja-multiconfiguration-vcpkg --config Release
+          cmake --build --preset vcpkg-fmt-template-ninja-multiconfiguration-vcpkg
 
       # Upload vcpkg's logs as artifacts.
       - name: Upload vcpkg build log files
@@ -149,12 +149,7 @@ jobs:
         with:
           name: packages-${{ matrix.os }}
           path: |
-            packages/*.zip
-            packages/*.exe
-            packages/*.deb
-            packages/*.rpm
-            packages/*.pkg
-            packages/*.dmg
+            packages/*.*
 
   publish:
     name: Publish
