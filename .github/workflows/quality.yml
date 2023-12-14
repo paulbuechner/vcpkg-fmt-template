@@ -96,7 +96,7 @@ jobs:
       # Upload vcpkg's logs as artifacts.
       - name: Upload vcpkg build log files
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vcpkg-log-files-${{ matrix.os }}
           path: deps/vcpkg/buildtrees/**/*.log
@@ -104,7 +104,7 @@ jobs:
       # Upload builds logs as artifacts.
       - name: Upload builds log files
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: builds-log-files-${{ matrix.os }}
           path: builds/**/*.log
