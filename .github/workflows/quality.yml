@@ -10,6 +10,11 @@ on:
       - main
       - development
   workflow_dispatch:
+    inputs:
+      debug:
+        description: 'Set to true to enable debug mode'
+        required: false
+        default: 'false'
 
 jobs:
   quality:
@@ -66,9 +71,11 @@ jobs:
 
       - name: List $RUNNER_WORKSPACE before build
         run: find $RUNNER_WORKSPACE
+        if: ${{ inputs.debug == 'true' }}
         shell: bash
 
       - name: Prints output of run-vcpkg's action.
+        if: ${{ inputs.debug == 'true' }}
         run: echo "root='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}', triplet='${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_DEFAULT_TRIPLET_OUT }}' "
 
       - name: Run CMake+vcpkg+Ninja
@@ -78,8 +85,10 @@ jobs:
           cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
           configurePreset: 'vcpkg-fmt-template-ninja-multiconfiguration-vcpkg'
           buildPreset: 'vcpkg-fmt-template-ninja-multiconfiguration-vcpkg'
+
       - name: List $RUNNER_WORKSPACE after build
         run: find $RUNNER_WORKSPACE
+        if: ${{ inputs.debug == 'true' }}
         shell: bash
 
       # Upload vcpkg's logs as artifacts.
