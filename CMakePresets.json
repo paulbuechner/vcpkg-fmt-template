@@ -8,7 +8,7 @@
   "configurePresets": [
     {
       "name": "vcpkg-fmt-template-ninja-multiconfiguration-vcpkg",
-      "displayName": "vcpkg-fmt-template Windows Ninja Multi-Config",
+      "displayName": "vcpkg-fmt-template Ninja Multi-Config",
       "description": "Configure with vcpkg toolchain and generate Ninja project files for all configurations",
       "binaryDir": "${sourceDir}/builds/${presetName}",
       "generator": "Ninja Multi-Config",
@@ -27,8 +27,8 @@
   "buildPresets": [
     {
       "name": "vcpkg-fmt-template-ninja-multiconfiguration-vcpkg",
+      "displayName": "vcpkg-fmt-template Ninja Multi-Config",
       "configurePreset": "vcpkg-fmt-template-ninja-multiconfiguration-vcpkg",
-      "displayName": "Build vcpkg-fmt-template-ninja-multiconfiguration-vcpkg",
       "description": "Build with Ninja the configuration specified with --config",
       "configuration": "Release"
     }
