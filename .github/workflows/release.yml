@@ -85,7 +85,7 @@ jobs:
         shell: bash
 
       - name: Setup vcpkg
-        uses: lukka/run-vcpkg@v11
+        uses: lukka/run-vcpkg@v11.6
         id: runvcpkg
         with:
           vcpkgDirectory: '${{ env.VCPKG_ROOT }}'
