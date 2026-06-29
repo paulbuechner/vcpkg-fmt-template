@@ -43,10 +43,10 @@ importers:
         version: 9.1.7
       prettier:
         specifier: ^3.0.0
-        version: 3.8.0
+        version: 3.9.3
       prettier-plugin-packagejson:
         specifier: ^3.0.0
-        version: 3.0.0(prettier@3.8.0)
+        version: 3.0.0(prettier@3.9.3)
       tsx:
         specifier: ^4.0.0
         version: 4.22.1
@@ -703,6 +703,7 @@ packages:
   git-raw-commits@5.0.1:
     resolution: {integrity: sha512-Y+csSm2GD/PCSh6Isd/WiMjNAydu0VBiG9J7EdQsNA5P9uXvLayqjmTsNlK5Gs9IhblFZqOU0yid5Il5JPoLiQ==}
     engines: {node: '>=18'}
+    deprecated: Deprecated and no longer maintained. Use @conventional-changelog/git-client instead.
     hasBin: true
 
   glob-parent@5.1.2:
@@ -956,8 +957,8 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
-  prettier@3.8.0:
-    resolution: {integrity: sha512-yEPsovQfpxYfgWNhCfECjG5AQaO+K3dp6XERmOepyPDVqcJm+bjyCVO3pmU+nAPe0N5dDvekfGezt/EIiRe1TA==}
+  prettier@3.9.3:
+    resolution: {integrity: sha512-HWmu+K+zvHNpaMfSnYeqdqrDbR16cuIXaPx8WoHaviQkDJh1/0BNtOZmHVQI5jc3wXv0H1yXc9wjvFdXh+n3hQ==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -2072,15 +2073,15 @@ snapshots:
 
   pify@4.0.1: {}
 
-  prettier-plugin-packagejson@3.0.0(prettier@3.8.0):
+  prettier-plugin-packagejson@3.0.0(prettier@3.9.3):
     dependencies:
       sort-package-json: 3.6.0
     optionalDependencies:
-      prettier: 3.8.0
+      prettier: 3.9.3
 
   prettier@2.8.8: {}
 
-  prettier@3.8.0: {}
+  prettier@3.9.3: {}
 
   quansync@0.2.11: {}
 
